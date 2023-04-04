@@ -9,7 +9,7 @@ export const NewIssue = () => {
     title: '',
     description: '',
     createdBy: '',
-    createdAt: Date.now(),
+    createdAt: new Date(),
   });
 
   useEffect(() => {
@@ -33,29 +33,50 @@ export const NewIssue = () => {
     }));
   }
 
+  const handleClick = (e) => {
+    e.preventDefault();
+
+    if (issueForm.title !== '' && issueForm.description !== '') {
+      const allIssues = JSON.parse(localStorage.getItem('all_issues'));
+      let updatedIssues = [];
+  
+      if (allIssues) {
+        updatedIssues = [...allIssues, {...issueForm, id: allIssues.length + 1}]
+      } else {
+        updatedIssues = [{...issueForm, id: 1}]
+      }
+  
+      localStorage.setItem('all_issues', JSON.stringify(updatedIssues));
+      setIssueForm((prev) => ({
+        ...prev,
+        title: '',
+        description: '',
+        createdAt: new Date()
+      }))
+    }
+  }
+
   return (
     <Layout>
-      <section className="max-w-5xl m-auto">
-        <h1 className="text-3xl font-bold mb-4">Create New Issue</h1>
+      <h1 className="text-3xl font-bold mb-4">Create New Issue</h1>
 
-        <form method="POST" className="flex flex-col gap-4">
-          <TextField
-            label="title"
-            name="title"
-            value={issueForm.title}
-            placeholder="title here..."
-            handleChange={handleChange}
-          />
-          <Textarea
-            label="description"
-            name="description"
-            value={issueForm.description}
-            placeholder="description here..."
-            handleChange={handleChange}
-          />
-          <Button label='Create' />
-        </form>
-      </section>
+      <form method="POST" className="flex flex-col gap-4">
+        <TextField
+          label="title"
+          name="title"
+          value={issueForm.title}
+          placeholder="title here..."
+          handleChange={handleChange}
+        />
+        <Textarea
+          label="description"
+          name="description"
+          value={issueForm.description}
+          placeholder="description here..."
+          handleChange={handleChange}
+        />
+        <Button type="submit" label='Create' handleClick={handleClick} />
+      </form>
     </Layout>
   );
 };
