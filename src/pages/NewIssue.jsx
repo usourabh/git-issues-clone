@@ -3,6 +3,7 @@ import { Layout } from '../components/Layout';
 import { TextField } from '../components/Forms/TextField';
 import { Textarea } from '../components/Forms/Textarea';
 import { Button } from '../components/Forms/Button';
+import { getUsername } from '../utils';
 
 export const NewIssue = () => {
   const [issueForm, setIssueForm] = useState({
@@ -13,12 +14,7 @@ export const NewIssue = () => {
   });
 
   useEffect(() => {
-    let username = localStorage.getItem('username');
-
-    if (!username) {
-      username = 'usourabh';
-      localStorage.setItem('username', username);
-    }
+    const username = getUsername();
 
     setIssueForm((prev) => ({
       ...prev,
@@ -29,9 +25,9 @@ export const NewIssue = () => {
   const handleChange = (e) => {
     setIssueForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
-  }
+  };
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -39,22 +35,25 @@ export const NewIssue = () => {
     if (issueForm.title !== '' && issueForm.description !== '') {
       const allIssues = JSON.parse(localStorage.getItem('all_issues'));
       let updatedIssues = [];
-  
+
       if (allIssues) {
-        updatedIssues = [...allIssues, {...issueForm, id: allIssues.length + 1}]
+        updatedIssues = [
+          ...allIssues,
+          { ...issueForm, id: allIssues.length + 1 },
+        ];
       } else {
-        updatedIssues = [{...issueForm, id: 1}]
+        updatedIssues = [{ ...issueForm, id: 1 }];
       }
-  
+
       localStorage.setItem('all_issues', JSON.stringify(updatedIssues));
       setIssueForm((prev) => ({
         ...prev,
         title: '',
         description: '',
-        createdAt: new Date()
-      }))
+        createdAt: new Date(),
+      }));
     }
-  }
+  };
 
   return (
     <Layout>
@@ -75,7 +74,7 @@ export const NewIssue = () => {
           placeholder="description here..."
           handleChange={handleChange}
         />
-        <Button type="submit" label='Create' handleClick={handleClick} />
+        <Button type="submit" label="Create" handleClick={handleClick} />
       </form>
     </Layout>
   );
