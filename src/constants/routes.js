@@ -1,3 +1,4 @@
+import { Issue } from '../pages/Issue';
 import { IssueList } from '../pages/IssueList';
 import { NewIssue } from '../pages/NewIssue';
 
@@ -10,5 +11,9 @@ export const routes = [
   {
     path: '/new-issue',
     element: <NewIssue />,
+  },
+  {
+    path: '/issues/:id',
+    element: <Issue />,
   },
 ];

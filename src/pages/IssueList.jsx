@@ -1,7 +1,18 @@
 import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
+import { useEffect, useState } from 'react';
 
 export const IssueList = () => {
+  const [allIssues, setAllIssues] = useState([]);
+
+  useEffect(() => {
+    const issues = JSON.parse(localStorage.getItem('all_issues'));
+
+    if (issues) {
+      setAllIssues(issues);
+    }
+  }, [])
+
   return (
     <Layout>
       <div className="flex items-center justify-between">
@@ -12,6 +23,18 @@ export const IssueList = () => {
         >
           New Issue
         </Link>
+      </div>
+
+      <div className='mt-4'>
+        {allIssues.map(issue => (
+          <Link to={`/issues/${issue.id}`} key={issue.id} className='border border-neutral-500 flex items-center justify-between p-4'>
+            <p>{issue.title}</p>
+            <div className='flex items-center gap-2 text-sm font-semibold'>
+              <span className='text-blue-500'>{issue.createdBy}</span>
+              <span className='text-neutral-600'>{issue.createdAt}</span>
+            </div>
+          </Link>
+        ))}
       </div>
     </Layout>
   );
