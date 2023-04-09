@@ -11,7 +11,7 @@ export const IssueList = () => {
     if (issues) {
       setAllIssues(issues);
     }
-  }, [])
+  }, []);
 
   return (
     <Layout>
@@ -25,13 +25,26 @@ export const IssueList = () => {
         </Link>
       </div>
 
-      <div className='mt-4'>
-        {allIssues.map(issue => (
-          <Link to={`/issues/${issue.id}`} key={issue.id} className='border border-neutral-500 flex items-center justify-between p-4'>
-            <p>{issue.title}</p>
-            <div className='flex items-center gap-2 text-sm font-semibold'>
-              <span className='text-blue-500'>{issue.createdBy}</span>
-              <span className='text-neutral-600'>{issue.createdAt}</span>
+      <div className="mt-4">
+        {allIssues.map((issue) => (
+          <Link
+            to={`/issues/${issue.id}`}
+            key={issue.id}
+            className="border border-neutral-500 flex items-center justify-between p-4"
+          >
+            <div className='flex items-center gap-2'>
+              <p>{issue.title}</p>
+              <span
+                className={`text-xs rounded-lg p-1 text-neutral-800 ${
+                  issue.status === 'open' ? 'bg-green-500' : 'bg-purple-500'
+                }`}
+              >
+                {issue.status}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-semibold">
+              <span className="text-blue-500">{issue.createdBy}</span>
+              <span className="text-neutral-600">{issue.createdAt}</span>
             </div>
           </Link>
         ))}

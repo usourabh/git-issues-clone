@@ -2,15 +2,16 @@ import { Textarea } from './Forms/Textarea';
 import { Button } from './Forms/Button';
 import { useEffect, useState } from 'react';
 import { getUsername } from '../utils';
-import { json } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 
 export const Comment = ({ id, setIsCommentUpdated }) => {
   const [commentForm, setCommentForm] = useState({
     description: '',
-    issueId: id,
+    issueId: Number(id),
     createdBy: '',
     createdAt: new Date(),
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const username = getUsername();
@@ -55,6 +56,22 @@ export const Comment = ({ id, setIsCommentUpdated }) => {
     }
   };
 
+  const handleClose = () => {
+    const allIssues = JSON.parse(localStorage.getItem('all_issues'));
+
+    if (allIssues) {
+      const issue = allIssues.find((issue) => {
+        return issue.id === Number(id)
+      });
+
+      if (issue) {
+        issue.status = 'closed';
+        localStorage.setItem('all_issues', JSON.stringify(allIssues));
+        navigate(0);
+      }
+    }
+  }
+
   return (
     <form method="POST" className="flex flex-col gap-4 mt-4 py-4">
       <Textarea
@@ -64,7 +81,10 @@ export const Comment = ({ id, setIsCommentUpdated }) => {
         name="description"
         handleChange={handleChange}
       />
-      <Button type="button" label="Comment" handleClick={handleClick} />
+      <div className='flex items-center gap-4 justify-between'>
+        <Button type="button" label="Comment" handleClick={handleClick} />
+        <Button type="button" label="Close" handleClick={handleClose} styleClass="bg-purple-500" />
+      </div>
     </form>
   );
 };

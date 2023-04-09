@@ -3,6 +3,7 @@ import { Layout } from '../components/Layout';
 import { useEffect, useState } from 'react';
 import { Card } from '../components/Card';
 import { Comment } from '../components/Comment';
+import { Button } from '../components/Forms/Button';
 
 export const Issue = () => {
   const { id } = useParams();
@@ -30,7 +31,7 @@ export const Issue = () => {
 
       if (allComments) {
         const filteredIssueComments = allComments.filter((comment) => {
-          return comment.issueId === id;
+          return comment.issueId === Number(id);
         });
         setComments(filteredIssueComments);
       }
@@ -42,7 +43,16 @@ export const Issue = () => {
   return (
     <Layout>
       <div>
-        <h1 className="text-3xl font-bold mb-4">{issue.title}</h1>
+        <div className='flex items-center gap-4'>
+          <h1 className="text-3xl font-bold mb-4">{issue.title}</h1>
+          <span
+            className={`text-xs rounded-lg p-1 text-neutral-800 ${
+              issue.status === 'open' ? 'bg-green-500' : 'bg-purple-500'
+            }`}
+          >
+            {issue.status}
+          </span>
+        </div>
 
         <Card
           username={issue.createdBy}
@@ -51,6 +61,7 @@ export const Issue = () => {
         />
 
         <section className="flex flex-col gap-4 mt-4">
+          <h3 className='text-base font-semibold text-neutral-300'>Comments: </h3>
           {comments.map((comment) => (
             <Card
               key={comment.id}
@@ -61,9 +72,9 @@ export const Issue = () => {
           ))}
         </section>
 
-        <section>
+        {issue.status === 'open' && (
           <Comment id={id} setIsCommentUpdated={setIsCommentUpdated} />
-        </section>
+        )}
       </div>
     </Layout>
   );

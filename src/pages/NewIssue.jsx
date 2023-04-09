@@ -4,13 +4,16 @@ import { TextField } from '../components/Forms/TextField';
 import { Textarea } from '../components/Forms/Textarea';
 import { Button } from '../components/Forms/Button';
 import { getUsername } from '../utils';
+import { useNavigate } from 'react-router-dom';
 
 export const NewIssue = () => {
+  const navigate = useNavigate();
   const [issueForm, setIssueForm] = useState({
     title: '',
     description: '',
     createdBy: '',
     createdAt: new Date(),
+    status: 'open'
   });
 
   useEffect(() => {
@@ -35,14 +38,16 @@ export const NewIssue = () => {
     if (issueForm.title !== '' && issueForm.description !== '') {
       const allIssues = JSON.parse(localStorage.getItem('all_issues'));
       let updatedIssues = [];
+      let currentIssueId = 1;
 
       if (allIssues) {
+        currentIssueId = allIssues.length + 1;
         updatedIssues = [
           ...allIssues,
-          { ...issueForm, id: allIssues.length + 1 },
+          { ...issueForm, id: currentIssueId },
         ];
       } else {
-        updatedIssues = [{ ...issueForm, id: 1 }];
+        updatedIssues = [{ ...issueForm, id: currentIssueId }];
       }
 
       localStorage.setItem('all_issues', JSON.stringify(updatedIssues));
@@ -52,6 +57,8 @@ export const NewIssue = () => {
         description: '',
         createdAt: new Date(),
       }));
+
+      return navigate(`/issues/${currentIssueId}`);
     }
   };
 
